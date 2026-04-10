@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "status": "ERROR: Execution failed on sql 'SELECT t.Genre, COUNT(t.TrackId) AS TrackCount FROM Track t GROUP BY t.Genre;': no such column: t.Genre"
+    },
+    {
+        "id": 2,
+        "status": "PASS",
+        "generated": "SELECT t1.Title, ar.Name FROM Album AS t1 INNER JOIN Artist AS ar ON t1.ArtistId = ar.ArtistId;"
+    },
+    {
+        "id": 3,
+        "status": "ERROR: Execution failed on sql 'SELECT T4.Country, SUM(T3.UnitPrice * T3.Quantity) as TotalRevenue\nFROM InvoiceLine AS T1\nJOIN Track AS T2 ON T1.TrackId = T2.TrackId\nJOIN Album AS T3 ON T2.AlbumId = T3.AlbumId\nJOIN Genre AS T4 ON T2.GenreId = T4.GenreId\nGROUP BY T4.Country;': no such column: T4.Country"
+    },
+    {
+        "id": 4,
+        "status": "ERROR: Execution failed on sql 'SELECT e.FirstName, e.LastName FROM Employee AS e JOIN Customer AS c ON e.SupportRepId = c.CustomerId WHERE c.Company LIKE 'Sales Support';': no such column: e.SupportRepId"
+    },
+    {
+        "id": 5,
+        "status": "FAIL",
+        "generated": "SELECT c.FirstName, c.LastName, SUM(il.UnitPrice * il.Quantity) as TotalSpent\nFROM Customer c\nJOIN Invoice i ON c.CustomerId = i.CustomerId\nJOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId\nGROUP BY c.CustomerId\nORDER BY TotalSpent DESC\nLIMIT 5;"
+    },
+    {
+        "id": 6,
+        "status": "FAIL",
+        "generated": "SELECT T3.Name AS ArtistName, T1.Name AS SongName\nFROM Track AS T1\nJOIN Album AS T2 ON T1.AlbumId = T2.AlbumId\nJOIN Genre AS T3 ON T1.GenreId = T3.GenreId\nWHERE T3.Name = 'Rock'\nGROUP BY T1.TrackId;"
+    },
+    {
+        "id": 7,
+        "status": "ERROR: Execution failed on sql 'SELECT T3.Name AS MediaTypeName, COUNT(T1.TrackId) AS TotalTracksSold\nFROM Track AS T1\nJOIN MediaType AS T2 ON T1.MediaTypeId = T2.MediaTypeId\nGROUP BY T2.Name;': no such column: T3.Name"
+    },
+    {
+        "id": 8,
+        "status": "PASS",
+        "generated": "SELECT T3.Name FROM Playlist AS T1 INNER JOIN PlaylistTrack AS T2 ON T1.PlaylistId = T2.PlaylistId INNER JOIN Track AS T3 ON T2.TrackId = T3.TrackId WHERE T1.Name = 'TV Shows';"
+    },
+    {
+        "id": 9,
+        "status": "PASS",
+        "generated": "SELECT a.Name, COUNT(t.TrackId) AS TrackCount\nFROM Artist a\nJOIN Album ar ON a.ArtistId = ar.ArtistId\nJOIN Track t ON ar.AlbumId = t.AlbumId\nGROUP BY a.ArtistId\nORDER BY TrackCount DESC\nLIMIT 1;"
+    },
+    {
+        "id": 10,
+        "status": "FAIL",
+        "generated": "SELECT g.Name FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.Name HAVING COUNT(t.TrackId) > 100;"
+    },
+    {
+        "id": 11,
+        "status": "FAIL",
+        "generated": "SELECT a.Name, SUM(il.UnitPrice * il.Quantity) as TotalRevenue\nFROM Artist a\nJOIN Album al ON a.ArtistId = al.ArtistId\nJOIN Track tr ON al.AlbumId = tr.AlbumId\nJOIN InvoiceLine il ON tr.TrackId = il.TrackId\nGROUP BY a.ArtistId\nORDER BY TotalRevenue DESC\nLIMIT 1;"
+    },
+    {
+        "id": 12,
+        "status": "FAIL",
+        "generated": "SELECT a.Title, AVG(t.Milliseconds) / 1000 AS AverageLengthInSeconds\nFROM Album a\nJOIN Track t ON a.AlbumId = t.AlbumId\nGROUP BY a.AlbumId;"
+    },
+    {
+        "id": 13,
+        "status": "PASS",
+        "generated": "SELECT c.FirstName, c.LastName, e.FirstName, e.LastName\nFROM Customer c\nJOIN Employee e ON c.SupportRepId = e.EmployeeId\nWHERE e.LastName = 'Peacock';"
+    },
+    {
+        "id": 14,
+        "status": "PASS",
+        "generated": "SELECT t2.City FROM Invoice AS t1 INNER JOIN Customer AS t2 ON t1.CustomerId = t2.CustomerId WHERE strftime('%Y', t1.InvoiceDate) = '2013' GROUP BY t2.City ORDER BY COUNT(*) DESC LIMIT 1;"
+    },
+    {
+        "id": 15,
+        "status": "ERROR: Execution failed on sql 'SELECT T1.Title FROM Album AS T1 INNER JOIN InvoiceLine AS T2 ON T1.AlbumId = T2.AlbumId GROUP BY T1.AlbumId HAVING SUM(T2.UnitPrice * T2.Quantity) > 20;': no such column: T2.AlbumId"
+    }
+]
