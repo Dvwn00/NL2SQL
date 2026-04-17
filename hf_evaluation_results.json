@@ -1,0 +1,109 @@
+[
+    {
+        "id": 1,
+        "question": "List all the artists name in the database.",
+        "status": "PASS",
+        "generated_sql": "SELECT a.Name FROM Artist a;",
+        "gold_sql": "SELECT Name FROM Artist;"
+    },
+    {
+        "id": 2,
+        "question": "How many genres are there?",
+        "status": "FAIL",
+        "generated_sql": "SELECT COUNT(DISTINCT g.GenreId) FROM Genre g;",
+        "gold_sql": "SELECT COUNT(*) FROM Genre;"
+    },
+    {
+        "id": 3,
+        "question": "List the names of the first 5 tracks.",
+        "status": "PASS",
+        "generated_sql": "SELECT t.Name FROM Track t ORDER BY t.TrackId LIMIT 5;",
+        "gold_sql": "SELECT Name FROM Track LIMIT 5;"
+    },
+    {
+        "id": 4,
+        "question": "Count the number of customers located in the USA.",
+        "status": "FAIL",
+        "generated_sql": "SELECT COUNT(DISTINCT c.CustomerId) FROM Customer c WHERE c.Country = 'USA';",
+        "gold_sql": "SELECT COUNT(*) FROM Customer WHERE Country = 'USA';"
+    },
+    {
+        "id": 5,
+        "question": "Find all invoices for the customer with ID 1.",
+        "status": "FAIL",
+        "generated_sql": "SELECT i.InvoiceId, i.InvoiceDate, i.Total FROM Invoice i JOIN Customer c ON i.CustomerId = c.CustomerId WHERE c.CustomerId = 1;",
+        "gold_sql": "SELECT * FROM Invoice WHERE CustomerId = 1;"
+    },
+    {
+        "id": 6,
+        "question": "List each album title along with the artist's name.",
+        "status": "PASS",
+        "generated_sql": "SELECT a.Title, ar.Name FROM Album a JOIN Artist ar ON a.ArtistId = ar.ArtistId;",
+        "gold_sql": "SELECT Album.Title, Artist.Name FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId;"
+    },
+    {
+        "id": 7,
+        "question": "How many tracks belong to the 'Rock' genre?",
+        "status": "FAIL",
+        "generated_sql": "SELECT COUNT(t.TrackId) FROM Track t JOIN Genre g ON t.GenreId = g.GenreId WHERE LOWER(g.Name) = 'rock';",
+        "gold_sql": "SELECT COUNT(*) FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId WHERE Genre.Name = 'Rock';"
+    },
+    {
+        "id": 8,
+        "question": "Show the total revenue generated from each country.",
+        "status": "FAIL",
+        "generated_sql": "SELECT i.BillingCountry, SUM(i.Total) AS TotalRevenue FROM Invoice i GROUP BY i.BillingCountry ORDER BY TotalRevenue DESC NULLS LAST;",
+        "gold_sql": "SELECT BillingCountry, SUM(Total) FROM Invoice GROUP BY BillingCountry;"
+    },
+    {
+        "id": 9,
+        "question": "Find the total number of items sold for each media type.",
+        "status": "FAIL",
+        "generated_sql": "SELECT mt.Name AS MediaType, SUM(il.Quantity) AS TotalQuantity FROM InvoiceLine il JOIN Track t ON il.TrackId = t.TrackId JOIN MediaType mt ON t.MediaTypeId = mt.MediaTypeId GROUP BY mt.Name ORDER BY TotalQuantity DESC NULLS LAST;",
+        "gold_sql": "SELECT MediaType.Name, COUNT(InvoiceLine.TrackId) FROM InvoiceLine JOIN Track ON InvoiceLine.TrackId = Track.TrackId JOIN MediaType ON Track.MediaTypeId = MediaType.MediaTypeId GROUP BY MediaType.Name;"
+    },
+    {
+        "id": 10,
+        "question": "List the first and last names of all employees who are Sales Support Agents.",
+        "status": "PASS",
+        "generated_sql": "SELECT e.FirstName, e.LastName FROM Employee e WHERE e.Title = 'Sales Support Agent';",
+        "gold_sql": "SELECT FirstName, LastName FROM Employee WHERE Title = 'Sales Support Agent';"
+    },
+    {
+        "id": 11,
+        "question": "List the top 5 customers who have spent the most money in total.",
+        "status": "FAIL",
+        "generated_sql": "SELECT c.CustomerId, SUM(i.Total) AS total_spent FROM Invoice i JOIN Customer c ON i.CustomerId = c.CustomerId GROUP BY c.CustomerId ORDER BY total_spent DESC LIMIT 5;",
+        "gold_sql": "SELECT c.FirstName, c.LastName, SUM(i.Total) as TotalSpent FROM Customer c JOIN Invoice i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId ORDER BY TotalSpent DESC LIMIT 5;"
+    },
+    {
+        "id": 12,
+        "question": "Which artist has the most tracks in the database? Give the name and count.",
+        "status": "ERROR",
+        "generated_sql": "SELECT a.Name, COUNT(t.TrackId) AS track_count FROM Track t JOIN Album a ON t.AlbumId = a.AlbumId GROUP BY a.Name ORDER BY track_count DESC LIMIT 1;",
+        "gold_sql": "SELECT ar.Name, COUNT(t.TrackId) as TrackCount FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId GROUP BY ar.ArtistId ORDER BY TrackCount DESC LIMIT 1;",
+        "error": "Execution failed on sql 'SELECT a.Name, COUNT(t.TrackId) AS track_count FROM Track t JOIN Album a ON t.AlbumId = a.AlbumId GROUP BY a.Name ORDER BY track_count DESC LIMIT 1;': no such column: a.Name"
+    },
+    {
+        "id": 13,
+        "question": "Which genres have more than 100 tracks? List the genre name and count.",
+        "status": "FAIL",
+        "generated_sql": "SELECT g.Name, COUNT(t.TrackId) AS track_count FROM Track t JOIN Genre g ON t.GenreId = g.GenreId GROUP BY g.Name HAVING COUNT(t.TrackId) > 100 ORDER BY track_count DESC NULLS LAST;",
+        "gold_sql": "SELECT g.Name, COUNT(t.TrackId) as TrackCount FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.GenreId HAVING TrackCount > 100;"
+    },
+    {
+        "id": 14,
+        "question": "Calculate the average track length in seconds for each genre.",
+        "status": "FAIL",
+        "generated_sql": "SELECT g.Name, AVG(t.Milliseconds) AS average_length FROM Track t JOIN Genre g ON t.GenreId = g.GenreId GROUP BY g.Name ORDER BY average_length NULLS LAST;",
+        "gold_sql": "SELECT g.Name, AVG(t.Milliseconds) / 1000.0 as AvgSeconds FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.GenreId;"
+    },
+    {
+        "id": 15,
+        "question": "Identify the artist who has earned the most revenue from customers in Canada.",
+        "status": "ERROR",
+        "generated_sql": "SELECT a.Name, SUM(i.Total) AS TotalRevenue FROM Invoice i JOIN Customer c ON i.CustomerId = c.CustomerId JOIN Album a ON c.SupportRepId = a.ArtistId WHERE c.Country = 'Canada' GROUP BY a.Name ORDER BY TotalRevenue DESC LIMIT 1;",
+        "gold_sql": "SELECT ar.Name, SUM(il.UnitPrice * il.Quantity) AS Revenue FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId JOIN InvoiceLine il ON t.TrackId = il.TrackId JOIN Invoice i ON il.InvoiceId = i.InvoiceId WHERE i.BillingCountry = 'Canada' GROUP BY ar.ArtistId ORDER BY Revenue DESC LIMIT 1;",
+        "error": "Execution failed on sql 'SELECT a.Name, SUM(i.Total) AS TotalRevenue FROM Invoice i JOIN Customer c ON i.CustomerId = c.CustomerId JOIN Album a ON c.SupportRepId = a.ArtistId WHERE c.Country = 'Canada' GROUP BY a.Name ORDER BY TotalRevenue DESC LIMIT 1;': no such column: a.Name"
+    }
+]
