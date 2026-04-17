@@ -1,77 +1,77 @@
 [
-    {
-        "id": 1,
-        "question": "How many tracks are there in each genre? List the genre name and the count.",
-        "gold_sql": "SELECT t.Genre, COUNT(t.TrackId) AS TrackCount FROM Track t GROUP BY t.Genre;"
-    },
-    {
-        "id": 2,
-        "question": "Provide a list of all albums and the name of the artist who created them.",
-        "gold_sql": "SELECT a.Title, ar.Name FROM Album a JOIN Artist ar ON a.ArtistId = ar.ArtistId;"
-    },
-    {
-        "id": 3,
-        "question": "What is the total revenue generated from each country?",
-        "gold_sql": "SELECT BillingCountry, SUM(Total) FROM Invoice GROUP BY BillingCountry;"
-    },
-    {
-        "id": 4,
-        "question": "Show the full names of all employees who are Sales Support Agents.",
-        "gold_sql": "SELECT e.FirstName, e.LastName FROM Employee e WHERE e.Title = 'Sales Support Agent';"
-    },
-    {
-        "id": 5,
-        "question": "List the top 5 customers who have spent the most money.",
-        "gold_sql": "SELECT c.CustomerId, c.FirstName, c.LastName, SUM(i.Total) as TotalSpent FROM Customer c JOIN Invoice i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId, c.FirstName, c.LastName ORDER BY TotalSpent DESC LIMIT 5;"
-    },
-    {
-        "id": 6,
-        "question": "List all Rock songs and the artists who performed them.",
-        "gold_sql": "SELECT t.Name, ar.Name FROM Track t JOIN Genre g ON t.GenreId = g.GenreId JOIN Album a ON t.AlbumId = a.AlbumId JOIN Artist ar ON a.ArtistId = ar.ArtistId WHERE g.Name = 'Rock';"
-    },
-    {
-        "id": 7,
-        "question": "Find the total number of tracks sold for each media type.",
-        "gold_sql": "SELECT m.Name, COUNT(il.TrackId) FROM MediaType m JOIN Track t ON m.MediaTypeId = t.MediaTypeId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY m.Name;"
-    },
-    {
-        "id": 8,
-        "question": "Show the names of all tracks that appear on the 'TV Shows' playlist.",
-        "gold_sql": "SELECT t.Name FROM Track t JOIN PlaylistTrack pt ON t.TrackId = pt.TrackId JOIN Playlist p ON pt.PlaylistId = p.PlaylistId WHERE p.Name = 'TV Shows';"
-    },
-    {
-        "id": 9,
-        "question": "Which artist has the most tracks? Give the name and count.",
-        "gold_sql": "SELECT ar.Name, COUNT(t.TrackId) FROM Artist ar JOIN Album a ON ar.ArtistId = a.ArtistId JOIN Track t ON a.AlbumId = t.AlbumId GROUP BY ar.Name ORDER BY COUNT(t.TrackId) DESC LIMIT 1;"
-    },
-    {
-        "id": 10,
-        "question": "Which genres have more than 100 tracks?",
-        "gold_sql": "SELECT g.Name, COUNT(t.TrackId) as TrackCount FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.Name HAVING TrackCount > 100;"
-    },
-    {
-        "id": 11,
-        "question": "Who is the best-selling artist by total revenue? Provide the artist's name and total revenue.",
-        "gold_sql": "SELECT ar.Name, SUM(i.Total) as TotalRevenue FROM Artist ar JOIN Album a ON ar.ArtistId = a.ArtistId JOIN Track t ON a.AlbumId = t.AlbumId JOIN InvoiceLine il ON t.TrackId = il.TrackId JOIN Invoice i ON il.InvoiceId = i.InvoiceId GROUP BY ar.Name ORDER BY TotalRevenue DESC LIMIT 1;"
-    },
-    {
-        "id": 12,
-        "question": "Find the average length of tracks in seconds for each album. List the album title and average length.",
-        "gold_sql": "SELECT a.Title, AVG(t.Milliseconds) as AverageLength FROM Album a JOIN Track t ON a.AlbumId = t.AlbumId GROUP BY a.Title;"
-    },
-    {
-        "id": 13,
-        "question": "List customers helped by the employee Jane Peacock. Provide the customer's full name and the employee's full name.",
-        "gold_sql": "SELECT c.FirstName AS CustomerFirstName, c.LastName AS CustomerLastName, e.FirstName AS EmployeeFirstName, e.LastName AS EmployeeLastName FROM Customer c JOIN Employee e ON c.SupportRepId = e.EmployeeId WHERE e.FirstName = 'Jane' AND e.LastName = 'Peacock';"
-    },
-    {
-        "id": 14,
-        "question": "Which city had the highest number of invoices in 2013?",
-        "gold_sql": "SELECT BillingCity, COUNT(InvoiceId) FROM Invoice WHERE InvoiceDate LIKE '2013%' GROUP BY BillingCity ORDER BY 2 DESC LIMIT 1;"
-    },
-    {
-        "id": 15,
-        "question": "List albums with a total price greater than 20 dollars.",
-        "gold_sql": "SELECT al.Title, SUM(t.UnitPrice) FROM Album al JOIN Track t ON al.AlbumId = t.AlbumId GROUP BY al.Title HAVING SUM(t.UnitPrice) > 20;"
-    }
+  {
+    "id": 1,
+    "question": "List all the artists name in the database.",
+    "gold_sql": "SELECT Name FROM Artist;"
+  },
+  {
+    "id": 2,
+    "question": "How many genres are there?",
+    "gold_sql": "SELECT COUNT(*) FROM Genre;"
+  },
+  {
+    "id": 3,
+    "question": "List the names of the first 5 tracks.",
+    "gold_sql": "SELECT Name FROM Track LIMIT 5;"
+  },
+  {
+    "id": 4,
+    "question": "Count the number of customers located in the USA.",
+    "gold_sql": "SELECT COUNT(*) FROM Customer WHERE Country = 'USA';"
+  },
+  {
+    "id": 5,
+    "question": "Find all invoices for the customer with ID 1.",
+    "gold_sql": "SELECT * FROM Invoice WHERE CustomerId = 1;"
+  },
+  {
+    "id": 6,
+    "question": "List each album title along with the artist's name.",
+    "gold_sql": "SELECT Album.Title, Artist.Name FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId;"
+  },
+  {
+    "id": 7,
+    "question": "How many tracks belong to the 'Rock' genre?",
+    "gold_sql": "SELECT COUNT(*) FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId WHERE Genre.Name = 'Rock';"
+  },
+  {
+    "id": 8,
+    "question": "Show the total revenue generated from each country.",
+    "gold_sql": "SELECT BillingCountry, SUM(Total) FROM Invoice GROUP BY BillingCountry;"
+  },
+  {
+    "id": 9,
+    "question": "Find the total number of items sold for each media type.",
+    "gold_sql": "SELECT MediaType.Name, COUNT(InvoiceLine.TrackId) FROM InvoiceLine JOIN Track ON InvoiceLine.TrackId = Track.TrackId JOIN MediaType ON Track.MediaTypeId = MediaType.MediaTypeId GROUP BY MediaType.Name;"
+  },
+  {
+    "id": 10,
+    "question": "List the first and last names of all employees who are Sales Support Agents.",
+    "gold_sql": "SELECT FirstName, LastName FROM Employee WHERE Title = 'Sales Support Agent';"
+  },
+  {
+    "id": 11,
+    "question": "List the top 5 customers who have spent the most money in total.",
+    "gold_sql": "SELECT c.FirstName, c.LastName, SUM(i.Total) as TotalSpent FROM Customer c JOIN Invoice i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId ORDER BY TotalSpent DESC LIMIT 5;"
+  },
+  {
+    "id": 12,
+    "question": "Which artist has the most tracks in the database? Give the name and count.",
+    "gold_sql": "SELECT ar.Name, COUNT(t.TrackId) as TrackCount FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId GROUP BY ar.ArtistId ORDER BY TrackCount DESC LIMIT 1;"
+  },
+  {
+    "id": 13,
+    "question": "Which genres have more than 100 tracks? List the genre name and count.",
+    "gold_sql": "SELECT g.Name, COUNT(t.TrackId) as TrackCount FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.GenreId HAVING TrackCount > 100;"
+  },
+  {
+    "id": 14,
+    "question": "Calculate the average track length in seconds for each genre.",
+    "gold_sql": "SELECT g.Name, AVG(t.Milliseconds) / 1000.0 as AvgSeconds FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.GenreId;"
+  },
+  {
+    "id": 15,
+    "question": "Identify the artist who has earned the most revenue from customers in Canada.",
+    "gold_sql": "SELECT ar.Name, SUM(il.UnitPrice * il.Quantity) AS Revenue FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId JOIN InvoiceLine il ON t.TrackId = il.TrackId JOIN Invoice i ON il.InvoiceId = i.InvoiceId WHERE i.BillingCountry = 'Canada' GROUP BY ar.ArtistId ORDER BY Revenue DESC LIMIT 1;"
+  }
 ]
