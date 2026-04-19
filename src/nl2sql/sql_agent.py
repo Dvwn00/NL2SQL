@@ -91,17 +91,3 @@ def nl2sql_agent(user_question: str) -> dict:
         }
     finally:
         connection.close()
-
-# Local Test block
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-    load_dotenv()
-
-    test_question = "How many employees are there in the Employee table?"
-
-    print("------Starting NL2SQL Agent Test------")
-    result = nl2sql_agent(test_question)
-
-    print("------Final Output------")
-    for key, value in result.items():
-        print(f"{key.capitalize()}: {value}")

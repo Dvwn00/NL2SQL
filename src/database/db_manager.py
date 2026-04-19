@@ -3,13 +3,10 @@
 # Include a RAG-based dynamic schema retrieval.
 import os
 import sqlite3
-from dotenv import load_dotenv
 from langchain_community.utilities import SQLDatabase
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
-
-load_dotenv()
 
 # The path to SQLite database
 DB_PATH = os.getenv("SQLITE_DB_PATH", "src/database/Chinook_Sqlite.sqlite")
@@ -79,9 +76,3 @@ def get_schema_context(question=None):
         return db.get_table_info()
     except Exception as e:
         return f"Error retrieving database schema: {e}"
-    
-if __name__ == "__main__":
-    # Example usage: Get schema context for a specific question
-    question = "What tables contain information about music tracks and their genres?"
-    schema_context = get_schema_context(question)
-    print(schema_context)
