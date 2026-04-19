@@ -1,4 +1,4 @@
-# Inference Script for Qwen-2.5:1B
+# Inference Script for Qwen-2.5:1B via ollama
 
 import requests
 import json
