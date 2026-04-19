@@ -1,19 +1,17 @@
-#"""Evaluation script for Hugging Face SQL generation."""
+# src/scripts/evaluate_hf.py
+# Evaluation script for Hugging Face SQL generation.
 
 import json
 from pathlib import Path
-
 import pandas as pd
-
-from src.database.db_manager import get_db_connection, get_schema_context
-from src.nl2sql.hf_engine import generate_sql
-
+from src.database.db_manager import get_db_connection
+from src.nl2sql.sql_agent import nl2sql_agent
 
 TEST_CASES_PATH = Path("src/scripts/test_cases.json")
 RESULTS_PATH = Path("hf_evaluation_results.json")
 
-
 def _normalize_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
+    # Normalize dataframe to ensure accurate comparison
     normalized = dataframe.copy()
     normalized.columns = [str(column).lower() for column in normalized.columns]
 
@@ -30,7 +28,7 @@ def _normalize_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
 
     return normalized
 
-
+# Compare generated SQL results with expected results
 def compare_results(df_generated: pd.DataFrame, df_gold: pd.DataFrame) -> bool:
     """Compare generated and expected query results."""
     if df_generated is None or df_gold is None:
@@ -44,8 +42,11 @@ def compare_results(df_generated: pd.DataFrame, df_gold: pd.DataFrame) -> bool:
         print(f"Error comparing results: {error}")
         return False
 
-
 def run_evaluation():
+    if not TEST_CASES_PATH.exists():
+        print(f"Error: Could not find test cases at {TEST_CASES_PATH}")
+        return
+    
     with TEST_CASES_PATH.open("r", encoding="utf-8") as handle:
         test_cases = json.load(handle)
 
@@ -58,8 +59,9 @@ def run_evaluation():
         question = case["question"]
         print(f"Testing ID {case['id']}: {question[:50]}...")
 
-        schema_context = get_schema_context(question=question)
-        generated_sql = generate_sql(question, schema_context)
+        # Implement agent to handle RAG retrieval and SQL generation
+        agent_response = nl2sql_agent(user_question=question)
+        generated_sql = agent_response.get("query", "")
 
         connection = get_db_connection()
         if connection is None:
@@ -104,7 +106,3 @@ def run_evaluation():
 
     with RESULTS_PATH.open("w", encoding="utf-8") as handle:
         json.dump(results, handle, indent=4)
-
-
-if __name__ == "__main__":
-    run_evaluation()
