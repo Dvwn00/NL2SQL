@@ -6,7 +6,8 @@ from langchain_core.language_models.llms import LLM
 from typing import Any, List, Optional
 
 # Default Model
-DEFAULT_MODEL_ID = "defog/llama-3-sqlcoder-8b:featherless-ai"
+# DEFAULT_MODEL_ID = "defog/llama-3-sqlcoder-8b:featherless-ai"
+DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai"
 
 # Custom LangChain wrapper for HuggingFace Inference API
 class HFChatWrapper(LLM):
@@ -16,7 +17,7 @@ class HFChatWrapper(LLM):
     client: Any
     model_id: str
 
-    def _call(self, prompt: str, stop: Optional[List[str]] = None, **kwargs: Any) -> str:
+    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
         completion = self.client.chat.completions.create(
             model = self.model_id,
             messages = [
