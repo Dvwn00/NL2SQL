@@ -48,16 +48,3 @@ def get_llm(model_id: str = DEFAULT_MODEL_ID):
     llm = HFChatWrapper(client=client, model_id=model_id)
 
     return llm
-
-# Local Test block
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-    load_dotenv()
-
-    try:
-        test_llm = get_llm()
-        print("Model loaded successfully! Running a quick ping...")
-        response = test_llm.invoke("Write a single SQL statement to count all rows in a table named 'Employee'.")
-        print(f"\nResponse:\n{response}")
-    except Exception as e:
-        print(f"Error during LLM initialization or invocation: {e}")
