@@ -6,6 +6,10 @@ from src.nl2sql.sql_agent import nl2sql_agent
 from src.scripts.evaluate_hf import run_evaluation
 
 load_dotenv()
+# Load HuggingFace API token from environment variable
+hf_token = os.getenv("HF_TOKEN")
+if not hf_token:
+    raise ValueError("HuggingFace API token not found!")
 
 # User prompt question manually and see the agent's response
 def interactive_mode():
