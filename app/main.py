@@ -2,40 +2,14 @@
 # Main entry point for the NL2SQL application
 import os
 from dotenv import load_dotenv
-from src.nl2sql.sql_agent import nl2sql_agent
-from src.scripts.evaluate_hf import run_evaluation
+from src.scripts.interactive_mode import run_interactiveMode
+from src.scripts.evaluation_mode import run_evaluation
 
 load_dotenv()
 # Load HuggingFace API token from environment variable
 hf_token = os.getenv("HF_TOKEN")
 if not hf_token:
     raise ValueError("HuggingFace API token not found!")
-
-# User prompt question manually and see the agent's response
-def interactive_mode():
-    """Allows user to manually type questions and get agent's response."""
-    print("\n========= Interactive NL2SQL Mode =========")
-    print("Type 'exit' or 'q' to return to the main menu.\n")
-
-    while True:
-        question = input("\nEnter your question: ")
-        if question.lower() in ['exit', 'q']:
-            break
-        if not question.strip():
-            continue
-
-        print("\nProcessing your question...")
-        response = nl2sql_agent(question)
-
-        print("\n========= Agent Response =========")
-        print(f"Status: {response.get('status')}")
-        print(f"Generated SQL:\n{response.get('query')}")
-
-        if response.get('status') == 'success':
-            print(f"\nresults (First 5 rows):\n{response.get('results')[:5]}")
-        else:
-            print(f"\nError Details:\n{response.get('error')}")
-        print("==================================\n")
 
 def main():
     """Main application entry point and interactive menu"""
@@ -51,7 +25,7 @@ def main():
         choice = input("Select an option (1-3): ")
 
         if choice == '1':
-            interactive_mode()
+            run_interactiveMode()
         elif choice == '2':
             run_evaluation()
         elif choice == '3':
