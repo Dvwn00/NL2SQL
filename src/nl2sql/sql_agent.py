@@ -40,6 +40,16 @@ Do not include any explanations, markdown formatting, or code blocks.
 
 Corrected SQL Query:"""
 
+# Generate text response
+NL_RESPONSE_TEMPLATE = """You are a helpful data assisstant.
+The user asked the following question: "{question}"
+The database returned the following results: {results}
+
+Provide a direct, natural language answer to the user's question using ONLY the provided data.
+Keep it brief. Do not explain the SQL query or mention the database schema.
+
+Answer:"""
+
 prompt_template = PromptTemplate(
     input_variables = ["schema", "question"],
     template = SQL_PROMPT_TEMPLATE
@@ -48,6 +58,11 @@ prompt_template = PromptTemplate(
 refinement_prompt = PromptTemplate(
     input_variables = ["schema", "question", "failed_sql", "error_message"],
     template = REFINEMENT_PROMPT_TEMPLATE
+)
+
+nl_response_template = PromptTemplate(
+    input_variables = ["question", "results"],
+    template = NL_RESPONSE_TEMPLATE
 )
 
 # Clean the output
@@ -83,6 +98,7 @@ def nl2sql_agent(user_question: str, max_retries: int = 3) -> dict:
     # LangChain Pipeline: Pipe prompt into LLM
     chain = prompt_template | llm
     refinement_chain = refinement_prompt | llm
+    nl_chain = nl_response_template | llm
 
     current_sql = ""
     error_message = ""
@@ -126,10 +142,18 @@ def nl2sql_agent(user_question: str, max_retries: int = 3) -> dict:
                 
                 if attempt > 1:
                     print(f"SQL query executed successfully after {attempt} attempts.")
+                
+                # Generate natural language response based on the results
+                print("Generating natural language response based on query results...")
+                nl_response = nl_chain.invoke({
+                    "question": user_question,
+                    "results": str(results)
+                })
 
                 return {
                     "query": generated_sql,
                     "results": results,
+                    "nl_response": nl_response,
                     "status": "success",
                     "attempts": attempt
                 }
