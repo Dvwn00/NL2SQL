@@ -1,6 +1,5 @@
-# src/scripts/evaluate_hf.py
+# Path: src/scripts/evaluation_mode.py
 # Evaluation script for Hugging Face SQL generation.
-
 import json
 from pathlib import Path
 import pandas as pd
