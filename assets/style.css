@@ -1,0 +1,15 @@
+/* Path: assets/style.css
+Custom styling for the frontend application */
+
+[data-testid="stSidebar"] {
+    overflow-y: hidden !important;
+    padding-bottom: -1rem !important;
+}
+
+[data-testid="stSidebar"] hr {
+    margin: 0.75rem 0px !important;
+}
+
+.stSelectbox {
+    margin-bottom: -10px;
+}

@@ -1,0 +1,4 @@
+# Path: .streamlit/config.toml
+# Handle streamlit global/native for custom styling
+
+font = "poppins, roboto, sans serif"
