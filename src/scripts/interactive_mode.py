@@ -1,5 +1,6 @@
 # Path: src/scripts/interactive_mode.py
 # Interactive mode: Allows user to manually type questions and see the agent's response
+from tabulate import tabulate
 from src.nl2sql.sql_agent import nl2sql_agent
 
 def run_interactiveMode():
@@ -20,6 +21,20 @@ def run_interactiveMode():
         print("\n========= Agent Response =========")
         if response.get('status') == 'success':
             print(f"Answer: {response.get('nl_response')}\n")
+
+            raw_data = response.get('results')
+            if raw_data:
+                display_data = raw_data
+                #display_data = raw_data[:20]
+                # Format data returned as a grid table
+                table = tabulate(display_data, tablefmt="grid")
+
+                print("Data Table:")
+                print(table)
+                print()
+            else:
+                print("No data returned from the database.")
+            
             print(f"Generated SQL:\n{response.get('query')}\n")
         else:
             print(f"Status: {response.get('status')}")
