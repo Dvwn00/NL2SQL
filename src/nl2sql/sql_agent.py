@@ -47,6 +47,7 @@ The database returned the following results: {results}
 
 Provide a direct, natural language answer to the user's question using ONLY the provided data.
 Keep it brief. Do not explain the SQL query or mention the database schema.
+If the database returns more than 5 rows, DO NOT list the items individually. Instead, provide a brief summary sentence.
 
 Answer:"""
 
