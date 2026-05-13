@@ -1,8 +1,8 @@
 # Path: src/nl2sql/sql_agent.py
 # SQL Agent for handling NL2SQL conversion with Auto-Correct functionality
-from backend.src.database.db_manager import get_db_connection, get_schema_context
+from src.database.db_manager import get_db_connection, get_schema_context
 from langchain_core.prompts import PromptTemplate
-from backend.src.nl2sql.hf_engine import get_llm
+from src.nl2sql.hf_engine import get_llm
 
 # Craft the Prompt Template to instruct LLM on its persona
 SQL_PROMPT_TEMPLATE = """You are an expert SQLite developer.

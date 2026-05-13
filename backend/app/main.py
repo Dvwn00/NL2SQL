@@ -2,8 +2,8 @@
 # Main entry point for the NL2SQL application
 import os
 from dotenv import load_dotenv
-from backend.src.scripts.interactive_mode import run_interactiveMode
-from backend.src.scripts.evaluation_mode import run_evaluation
+from src.scripts.interactive_mode import run_interactiveMode
+from src.scripts.evaluation_mode import run_evaluation
 
 load_dotenv()
 # Load HuggingFace API token from environment variable
