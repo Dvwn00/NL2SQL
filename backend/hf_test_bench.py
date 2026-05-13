@@ -1,6 +1,6 @@
 # Test the Hugging Face inference
-from src.nl2sql.hf_engine import generate_sql
-from src.database.db_manager import get_db_connection, get_schema_context
+from backend.src.nl2sql.hf_engine import generate_sql
+from backend.src.database.db_manager import get_db_connection, get_schema_context
 import pandas as pd
 
 def test_single_query():
