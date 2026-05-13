@@ -3,8 +3,8 @@
 import json
 from pathlib import Path
 import pandas as pd
-from src.database.db_manager import get_db_connection
-from src.nl2sql.sql_agent import nl2sql_agent
+from backend.src.database.db_manager import get_db_connection
+from backend.src.nl2sql.sql_agent import nl2sql_agent
 
 TEST_CASES_PATH = Path("src/scripts/test_cases.json")
 RESULTS_PATH = Path("hf_evaluation_results.json")
