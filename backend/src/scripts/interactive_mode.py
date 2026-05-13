@@ -1,6 +1,6 @@
 # Path: src/scripts/interactive_mode.py
 # Interactive mode: Allows user to manually type questions and see the agent's response
-from src.nl2sql.sql_agent import nl2sql_agent
+from backend.src.nl2sql.sql_agent import nl2sql_agent
 
 def run_interactiveMode():
     """ Allows user to manually type questions and get agent's response."""

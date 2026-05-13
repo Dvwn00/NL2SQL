@@ -2,8 +2,8 @@
 
 import json
 import pandas as pd
-from src.database.db_manager import get_db_connection, get_schema_context
-from src.nl2sql.qwen_engine import query_qwen, build_qwen_prompt
+from backend.src.database.db_manager import get_db_connection, get_schema_context
+from backend.src.nl2sql.qwen_engine import query_qwen, build_qwen_prompt
 
 def compare_results(df_generated_sql, df_gold_sql):
     """Compares the generated SQL query with the expected SQL query."""
