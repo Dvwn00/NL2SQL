@@ -84,7 +84,7 @@ def clean_sql(raw_sql: str) -> str:
     return cleaned.strip()
 
 # Function to handle NL2SQL conversion
-def nl2sql_agent(user_question: str, max_retries: int = 3) -> dict:
+def nl2sql_agent(user_question: str, max_retries: int = 3, model_id: str = None) -> dict:
     """
     Complete flow execution with Auto-correction:
     Get Schema context -> Generate SQL query -> Execute SQL query -> If Error, Refine & Retry ->Return results
@@ -94,7 +94,7 @@ def nl2sql_agent(user_question: str, max_retries: int = 3) -> dict:
     schema = get_schema_context(question = user_question)
 
     # Generate SQL query using the schema context and user question
-    llm = get_llm()
+    llm = get_llm(model_id=model_id)
 
     # LangChain Pipeline: Pipe prompt into LLM
     chain = prompt_template | llm
@@ -107,7 +107,7 @@ def nl2sql_agent(user_question: str, max_retries: int = 3) -> dict:
     # Auto-correction Loop
     for attempt in range(1, max_retries + 1):
         if attempt == 1:
-            print("Generating initial SQL query...")
+            print(f"Generating initial SQL query using {model_id or 'default model'}...")
             raw_response = chain.invoke({
                 "schema": schema,
                 "question": user_question
@@ -122,50 +122,50 @@ def nl2sql_agent(user_question: str, max_retries: int = 3) -> dict:
                 "error_message": error_message
             })
 
-            # Parse & clean the generated SQL query
-            generated_sql = clean_sql(raw_response)
-            current_sql = generated_sql
-            print(f"Generated SQL: \n{generated_sql}")
+        # Parse & clean the generated SQL query
+        generated_sql = clean_sql(raw_response)
+        current_sql = generated_sql
+        print(f"Generated SQL: \n{generated_sql}")
 
-            # Execute the generated SQL query and fetch results
-            connection = get_db_connection()
-            if not connection:
-                return {
-                    "query": generated_sql,
-                    "error": "Could not establish database connection",
-                    "status": "failed"
-                }
+        # Execute the generated SQL query and fetch results
+        connection = get_db_connection()
+        if not connection:
+            return {
+                "query": generated_sql,
+                "error": "Could not establish database connection",
+                "status": "failed"
+            }
+        
+        try:
+            cursor = connection.cursor()
+            cursor.execute(generated_sql)
+            results = cursor.fetchall()
             
-            try:
-                cursor = connection.cursor()
-                cursor.execute(generated_sql)
-                results = cursor.fetchall()
-                
-                if attempt > 1:
-                    print(f"SQL query executed successfully after {attempt} attempts.")
-                
-                # Generate natural language response based on the results
-                print("Generating natural language response based on query results...")
-                nl_response = nl_chain.invoke({
-                    "question": user_question,
-                    "results": str(results)
-                })
+            if attempt > 1:
+                print(f"SQL query executed successfully after {attempt} attempts.")
+            
+            # Generate natural language response based on the results
+            print("Generating natural language response based on query results...")
+            nl_response = nl_chain.invoke({
+                "question": user_question,
+                "results": str(results)
+            })
 
-                return {
-                    "query": generated_sql,
-                    "results": results,
-                    "nl_response": nl_response,
-                    "status": "success",
-                    "attempts": attempt
-                }
-            except Exception as e:
-                error_message = str(e)
-                print(f"Error executing SQL: {error_message}")
+            return {
+                "query": generated_sql,
+                "results": results,
+                "nl_response": nl_response,
+                "status": "success",
+                "attempts": attempt
+            }
+        except Exception as e:
+            error_message = str(e)
+            print(f"Error executing SQL: {error_message}")
 
-                if attempt == max_retries:
-                    print("Max retries reached. Returning error.")
-            finally:
-                connection.close()
+            if attempt == max_retries:
+                print("Max retries reached. Returning error.")
+        finally:
+            connection.close()
     
     return {
         "query": current_sql,

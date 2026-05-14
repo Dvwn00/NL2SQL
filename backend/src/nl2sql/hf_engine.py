@@ -6,10 +6,6 @@ from langchain_huggingface import HuggingFaceEndpoint
 from langchain_core.language_models.llms import LLM
 from typing import Any, List, Optional
 
-# Default Model
-# DEFAULT_MODEL_ID = "defog/llama-3-sqlcoder-8b:featherless-ai"
-# DEFAULT_MODEL_ID = "defog/sqlcoder-7b-2"
-# DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai"
 # Model Registry: Add several model to be tested
 MODEL_REGISTRY = {
     "defog/sqlcoder-7b-2": "text",
@@ -19,7 +15,7 @@ MODEL_REGISTRY = {
     #"deepseek-ai/DeepSeek-R1-Distill-Qwen-32B:featherless-ai": "chat"
 }
 
-ACTIVE_MODEL_ID = "Qwen/Qwen2.5-Coder-32B-Instruct:featherless-ai"
+DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-32B-Instruct:featherless-ai"
 
 # Custom LangChain wrapper for HuggingFace Inference API
 class HFChatWrapper(LLM):
@@ -43,9 +39,13 @@ class HFChatWrapper(LLM):
     @property
     def _llm_type(self) -> str:
         return "huggingface_inference_client"
-    
+
+def get_models() -> List[str]:
+    """Utility to return all model IDs available in the MODEL_REGISTRY."""
+    return list(MODEL_REGISTRY.keys())
+
 # Initialize the HuggingFace endpoint using the InferenceClient
-def get_llm(model_id: str = ACTIVE_MODEL_ID):
+def get_llm(model_id: str = DEFAULT_MODEL_ID):
     """
     Automatically detects the model type and returns the correct LangChain interface.
     Initializes the HuggingFace InferenceClient and returns an LLM instance for generating SQL queries.
@@ -55,16 +55,22 @@ def get_llm(model_id: str = ACTIVE_MODEL_ID):
     if not hf_token:
         raise ValueError("HuggingFace API token not found!")
     
-    model_type = MODEL_REGISTRY.get(model_id, "chat")
-    print(f"Initializing HuggingFace InferenceClient with model: {model_id}")
+    # Determine the model type based on the MODEL_REGISTRY
+    active_model = model_id if model_id else DEFAULT_MODEL_ID
+
+    if active_model not in MODEL_REGISTRY:
+        print(f"Warning: Model '{active_model}' not found in MODEL_REGISTRY. Defaulting to 'chat' type.")
+
+    model_type = MODEL_REGISTRY.get(active_model, "chat")
+    print(f"Initializing HuggingFace InferenceClient with model: {active_model}")
 
     if model_type == "chat":
         client = InferenceClient(api_key=hf_token)
-        return HFChatWrapper(client=client, model_id=model_id)
+        return HFChatWrapper(client=client, model_id=active_model)
     elif model_type == "text":
         # Route to standard Text Generation API
         return HuggingFaceEndpoint(
-            repo_id=model_id,
+            repo_id=active_model,
             task="text-generation",
             max_new_tokens=512,
             temperature=0.0,
@@ -77,7 +83,7 @@ def get_llm(model_id: str = ACTIVE_MODEL_ID):
 
     # Initialize the HuggingFace InferenceClient
     #client = InferenceClient(api_key=hf_token)
-    #llm = HFChatWrapper(client=client, model_id=model_id)
+    #llm = HFChatWrapper(client=client, model_id=active_model)
 
     #return llm
 
