@@ -1,0 +1,46 @@
+id,model_id,question,status,data_returned_correct,attempts,nl_response,sql_generated,error
+1,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,List all the artists name in the database.,success,True,1,There are 163 artists listed in the database.,SELECT Name FROM Artist,
+2,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,How many genres are there?,success,True,1,There are 25 genres.,SELECT COUNT(*) FROM Genre,
+3,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,List the names of the first 5 tracks.,success,True,1,"The first 5 tracks are: For Those About To Rock (We Salute You), Balls to the Wall, Fast As a Shark, Restless and Wild, and Princess of the Dawn.",SELECT Name FROM Track LIMIT 5,
+4,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Count the number of customers located in the USA.,success,True,1,There are 13 customers located in the USA.,SELECT COUNT(*) FROM Customer WHERE Country = 'USA';,
+5,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Find all invoices for the customer with ID 1.,success,True,1,The customer with ID 1 has 7 invoices.,SELECT * FROM Invoice WHERE CustomerId = 1;,
+6,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,List each album title along with the artist's name.,success,True,1,"There are 100 albums listed, each with its corresponding artist's name.","SELECT T1.Title, T2.Name FROM Album AS T1 INNER JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId",
+7,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,How many tracks belong to the 'Rock' genre?,success,True,1,There are 1297 tracks that belong to the 'Rock' genre.,SELECT COUNT(*) FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId WHERE Genre.Name = 'Rock',
+8,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Show the total revenue generated from each country.,success,True,1,"Total revenue generated from each country:
+
+- Argentina: $37.62
+- Australia: $37.62
+- Austria: $42.62
+- Belgium: $37.62
+- Brazil: $190.1
+- Canada: $303.96
+- Chile: $46.62
+- Czech Republic: $90.24
+- Denmark: $37.62
+- Finland: $41.62
+- France: $195.1
+- Germany: $156.48
+- Hungary: $45.62
+- India: $75.26
+- Ireland: $45.62
+- Italy: $37.62
+- Netherlands: $40.62
+- Norway: $39.62
+- Poland: $37.62
+- Portugal: $77.24
+- Spain: $37.62
+- Sweden: $38.62
+- USA: $523.06
+- United Kingdom: $112.86","SELECT BillingCountry, SUM(Total) AS TotalRevenue FROM Invoice GROUP BY BillingCountry",
+9,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Find the total number of items sold for each media type.,Error executing SQL after 3 attempts,False,0,N/A,"SELECT T1.Name, COUNT(T2.MediaTypeId) AS TotalItemsSold FROM MediaType AS T1 INNER JOIN Invoices AS T2 ON T1.MediaTypeId = T2.MediaTypeId GROUP BY T1.Name",no such table: Invoices
+10,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,List the first and last names of all employees who are Sales Support Agents.,success,True,1,"The first and last names of all Sales Support Agents are Jane Peacock, Margaret Park, and Steve Johnson.","SELECT FirstName, LastName FROM Employee WHERE Title = 'Sales Support Agent'",
+11,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,List the top 5 customers who have spent the most money in total.,success,False,2,"The top 5 customers who have spent the most money in total are Helena Holý, Richard Cunningham, Luis Rojas, Ladislav Kovács, and Hugh O'Reilly, each with a total expenditure of $49.62.","SELECT c.CustomerId, c.FirstName, c.LastName, SUM(i.Total) AS TotalSpent
+FROM Customer c
+JOIN Invoice i ON c.CustomerId = i.CustomerId
+GROUP BY c.CustomerId
+ORDER BY TotalSpent DESC
+LIMIT 5",
+12,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Which artist has the most tracks in the database? Give the name and count.,success,True,3,Iron Maiden has the most tracks with 213.,"SELECT T3.Name, COUNT(*) as TrackCount FROM Track AS T1 INNER JOIN Album AS T2 ON T1.AlbumId = T2.AlbumId INNER JOIN Artist AS T3 ON T2.ArtistId = T3.ArtistId GROUP BY T3.Name ORDER BY TrackCount DESC LIMIT 1",
+13,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Which genres have more than 100 tracks? List the genre name and count.,success,True,1,"Genres with more than 100 tracks include Rock (1297), Metal (374), Latin (579), Jazz (130), and Alternative & Punk (332).","SELECT T2.Name, COUNT(T1.TrackId) AS TrackCount FROM TRACK AS T1 INNER JOIN GENRE AS T2 ON T1.GenreId = T2.GenreId GROUP BY T2.Name HAVING COUNT(T1.TrackId) > 100",
+14,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Calculate the average track length in seconds for each genre.,success,False,1,The average track length in seconds for each genre ranges from 134.17 seconds (genre 5) to 2934.05 seconds (genre 24).,"SELECT AVG(Milliseconds / 1000) AS AverageLengthInSeconds, GenreId FROM Track GROUP BY GenreId",
+15,Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai,Identify the artist who has earned the most revenue from customers in Canada.,Error executing SQL after 3 attempts,False,0,N/A,SELECT T1.Name FROM ARTIST AS T1 JOIN ALBUM AS T2 ON T1.ArtistId = T2.ArtistId JOIN TRACK AS T3 ON T2.AlbumId = T3.AlbumId JOIN INVOICEITEM AS T4 ON T3.TrackId = T4.TrackId JOIN CUSTOMER AS T5 ON T4.InvoiceId = T5.InvoiceId WHERE T5.Country = 'Canada' GROUP BY T1.Name ORDER BY SUM(T4.UnitPrice * T4.Quantity) DESC LIMIT 1,no such table: INVOICEITEM
