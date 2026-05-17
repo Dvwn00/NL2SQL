@@ -1,0 +1,137 @@
+[
+    {
+        "id": 1,
+        "question": "List all the artists name in the database.",
+        "taxonomy": "Selection",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT Name FROM Artist",
+        "gold_sql": "SELECT Name FROM Artist;"
+    },
+    {
+        "id": 2,
+        "question": "How many genres are there?",
+        "taxonomy": "Aggregation",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT COUNT(*) FROM Genre",
+        "gold_sql": "SELECT COUNT(*) FROM Genre;"
+    },
+    {
+        "id": 3,
+        "question": "List the names of the first 5 tracks.",
+        "taxonomy": "Selection, Limit",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT Name FROM Track LIMIT 5",
+        "gold_sql": "SELECT Name FROM Track LIMIT 5;"
+    },
+    {
+        "id": 4,
+        "question": "Count the number of customers located in the USA.",
+        "taxonomy": "Aggregation, Filtering",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT COUNT(*) FROM Customer WHERE Country = 'USA'",
+        "gold_sql": "SELECT COUNT(*) FROM Customer WHERE Country = 'USA';"
+    },
+    {
+        "id": 5,
+        "question": "Find all invoices for the customer with ID 1.",
+        "taxonomy": "Selection, Filtering",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT * FROM Invoice WHERE CustomerId = 1",
+        "gold_sql": "SELECT * FROM Invoice WHERE CustomerId = 1;"
+    },
+    {
+        "id": 6,
+        "question": "List each album title along with the artist's name.",
+        "taxonomy": "Simple Join",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT Album.Title, Artist.Name FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId",
+        "gold_sql": "SELECT Album.Title, Artist.Name FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId;"
+    },
+    {
+        "id": 7,
+        "question": "How many tracks belong to the 'Rock' genre?",
+        "taxonomy": "Simple Join, Filtering, Aggregation",
+        "ex_pass": true,
+        "esm_pass": false,
+        "generated_sql": "SELECT COUNT(*) FROM Track AS T JOIN Genre AS G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+        "gold_sql": "SELECT COUNT(*) FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId WHERE Genre.Name = 'Rock';"
+    },
+    {
+        "id": 8,
+        "question": "Show the total revenue generated from each country.",
+        "taxonomy": "Aggregation, Grouping",
+        "ex_pass": true,
+        "esm_pass": false,
+        "generated_sql": "SELECT BillingCountry, SUM(Total) AS TotalRevenue FROM Invoice GROUP BY BillingCountry",
+        "gold_sql": "SELECT BillingCountry, SUM(Total) FROM Invoice GROUP BY BillingCountry;"
+    },
+    {
+        "id": 9,
+        "question": "Find the total number of items sold for each media type.",
+        "taxonomy": "Multi-Join, Aggregation, Grouping",
+        "ex_pass": true,
+        "esm_pass": false,
+        "generated_sql": "SELECT MediaType.Name, COUNT(*) AS TotalItemsSold\nFROM MediaType\nJOIN Track ON MediaType.MediaTypeId = Track.MediaTypeId\nJOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId\nGROUP BY MediaType.Name",
+        "gold_sql": "SELECT MediaType.Name, SUM(InvoiceLine.Quantity) FROM InvoiceLine JOIN Track ON InvoiceLine.TrackId = Track.TrackId JOIN MediaType ON Track.MediaTypeId = MediaType.MediaTypeId GROUP BY MediaType.Name;"
+    },
+    {
+        "id": 10,
+        "question": "List the first and last names of all employees who are Sales Support Agents.",
+        "taxonomy": "Selection, Filtering",
+        "ex_pass": true,
+        "esm_pass": true,
+        "generated_sql": "SELECT FirstName, LastName FROM Employee WHERE Title = 'Sales Support Agent'",
+        "gold_sql": "SELECT FirstName, LastName FROM Employee WHERE Title = 'Sales Support Agent';"
+    },
+    {
+        "id": 11,
+        "question": "List the top 5 customers who have spent the most money in total.",
+        "taxonomy": "Simple Join, Aggregation, Grouping, Ordering, Limit",
+        "ex_pass": false,
+        "esm_pass": false,
+        "generated_sql": "SELECT c.CustomerId, c.FirstName, c.LastName, SUM(i.Total) AS TotalSpent\nFROM Customer c\nJOIN Invoice i ON c.CustomerId = i.CustomerId\nGROUP BY c.CustomerId, c.FirstName, c.LastName\nORDER BY TotalSpent DESC\nLIMIT 5",
+        "gold_sql": "SELECT c.FirstName, c.LastName, SUM(i.Total) as TotalSpent FROM Customer c JOIN Invoice i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId ORDER BY TotalSpent DESC LIMIT 5;"
+    },
+    {
+        "id": 12,
+        "question": "Which artist has the most tracks in the database? Give the name and count.",
+        "taxonomy": "Multi-Join, Aggregation, Grouping, Ordering, Limit",
+        "ex_pass": true,
+        "esm_pass": false,
+        "generated_sql": "SELECT T2.Name, COUNT(T3.TrackId) AS TrackCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId JOIN Track AS T3 ON T1.AlbumId = T3.AlbumId GROUP BY T2.Name ORDER BY TrackCount DESC LIMIT 1",
+        "gold_sql": "SELECT ar.Name, COUNT(t.TrackId) as TrackCount FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId GROUP BY ar.ArtistId ORDER BY TrackCount DESC LIMIT 1;"
+    },
+    {
+        "id": 13,
+        "question": "Which genres have more than 100 tracks? List the genre name and count.",
+        "taxonomy": "Simple Join, Aggregation, Grouping, Having",
+        "ex_pass": true,
+        "esm_pass": false,
+        "generated_sql": "SELECT G.Name, COUNT(T.TrackId) AS TrackCount\nFROM Genre G\nJOIN Track T ON G.GenreId = T.GenreId\nGROUP BY G.GenreId\nHAVING COUNT(T.TrackId) > 100",
+        "gold_sql": "SELECT g.Name, COUNT(t.TrackId) as TrackCount FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.GenreId HAVING TrackCount > 100;"
+    },
+    {
+        "id": 14,
+        "question": "Calculate the average track length in seconds for each genre.",
+        "taxonomy": "Simple Join, Aggregation, Arithmetic, Grouping",
+        "ex_pass": false,
+        "esm_pass": false,
+        "generated_sql": "SELECT GenreId, AVG(Milliseconds / 1000.0) AS AverageLengthInSeconds FROM Track GROUP BY GenreId",
+        "gold_sql": "SELECT g.Name, AVG(t.Milliseconds) / 1000.0 as AvgSeconds FROM Genre g JOIN Track t ON g.GenreId = t.GenreId GROUP BY g.GenreId;"
+    },
+    {
+        "id": 15,
+        "question": "Identify the artist who has earned the most revenue from customers in Canada.",
+        "taxonomy": "Multi-Join, Aggregation, Grouping, Ordering, Limit",
+        "ex_pass": false,
+        "esm_pass": false,
+        "generated_sql": "SELECT T3.Name FROM Invoice AS T1 JOIN Customer AS T2 ON T1.CustomerId = T2.CustomerId JOIN InvoiceLine AS T4 ON T1.InvoiceId = T4.InvoiceId JOIN Track AS T5 ON T4.TrackId = T5.TrackId JOIN Album AS T6 ON T5.AlbumId = T6.AlbumId JOIN Artist AS T3 ON T6.ArtistId = T3.ArtistId WHERE T2.Country = 'Canada' GROUP BY T3.Name ORDER BY SUM(T1.Total) DESC LIMIT 1",
+        "gold_sql": "SELECT ar.Name, SUM(il.UnitPrice * il.Quantity) AS Revenue FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId JOIN Track t ON al.AlbumId = t.AlbumId JOIN InvoiceLine il ON t.TrackId = il.TrackId JOIN Invoice i ON il.InvoiceId = i.InvoiceId WHERE i.BillingCountry = 'Canada' GROUP BY ar.ArtistId ORDER BY Revenue DESC LIMIT 1;"
+    }
+]
