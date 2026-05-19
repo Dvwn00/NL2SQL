@@ -9,24 +9,23 @@ To run this CLI tool locally, follow these steps to set up your environment:
 
 1. Activate the Virtual Environment.
 
-    - **Windows**: venv\Scripts\Activate
-    - **macOS/Linux**: source venv/bin/activate
+- **Windows**: venv\Scripts\Activate
+- **macOS/Linux**: source venv/bin/activate
 
 2. Install Requirements
-    - Ensure a *requirements.txt* file exists in your project backend folder.
+- Ensure a *requirements.txt* file exists in your project backend folder.
 
-    >> pip install -r requirements.txt
+    > pip install -r requirements.txt
 
 3. Configure Environment Variable (.env)
 
-    **Note: Users must generate your own free access token from yiur https://huggingface.co/settings/tokens to avoid rate limits.**
+**Note:** Users must generate your own free access token from your https://huggingface.co/settings/tokens to avoid rate limits.
     
-    1. Create a *.env* file in the *backend/* directory
+- Create a *.env* file in the *backend/* directory
 
-    2. Add your Hugging Face *Read* Token to the file.
+- Add your Hugging Face *Read* Token to the file.
 
-        # Example .env file
-        HF_TOKEN=your_hugging_face_read_token_here
+    > HF_TOKEN=your_hugging_face_read_token_here
 
 ## Usage Guide
 
@@ -34,11 +33,11 @@ Once your environment is set up and your token is configured, you can run the CL
 
 1. Navigate to the Backend Directory
 
-    >> cd backend
+    > cd backend
 
 2. Launch the Application
 
-    >> python -m app.main
+    > python -m app.main
 
 3. Interacting with the CLI Menu Upon running the command, you will be presented with a main menu. Choose the number corresponding to your desired action:
 
@@ -50,11 +49,11 @@ Once your environment is set up and your token is configured, you can run the CL
 
 4. Model Selection & Batch Testing
 
-After selecting either option 1 or 2, the CLI will display a list of available NL2SQL models.
+    1. After selecting either option 1 or 2, the CLI will display a list of available NL2SQL models.
 
-Enter the number/name of the model you wish to test.
+    2. Enter the number/name of the model you wish to test.
 
-Automatic Execution: Once a model is selected, the system will automatically begin running the batch test against the scenarios defined in scripts/test_cases.json. Sit back and wait for the reports to generate in your root folder!
+    3. Automatic Execution: Once a model is selected, the system will automatically begin running the batch test against the scenarios defined in scripts/test_cases.json. Sit back and wait for the reports to generate in your root folder!
 
 ## 🚧 Roadmap
 - Development and integration of a graphical User Interface (Frontend).
