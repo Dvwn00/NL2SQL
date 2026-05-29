@@ -1,5 +1,5 @@
 # Path: frontend/app.py
-# Main application file for the frontend, setting up the app and routing.
+# Main application entry point, setting up the app and routing.
 import streamlit as st
 from components import auth, sidebar, chat
 

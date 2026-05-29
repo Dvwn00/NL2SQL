@@ -6,6 +6,7 @@ from utils import api
 
 def render_chat_interface():
     st.title(":material/sql: NL2SQL Assistant")
+    st.divider()
     
     # Render existing messages
     for msg in st.session_state['messages']:

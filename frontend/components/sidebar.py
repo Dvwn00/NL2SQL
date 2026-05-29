@@ -5,11 +5,20 @@ from utils import api
 
 def render_sidebar():
     with st.sidebar:
+        st.header(":material/sql:")
+
         if st.button(":material/add: New Chat", use_container_width=True):
             st.session_state['current_session_id'] = None
             st.session_state['messages'] = []
             st.rerun()
         st.divider()
+
+        st.subheader("Model Selection")
+        model_options = st.selectbox(
+            "Choose a model:",
+            ["Model A", "Model B"],
+            label_visibility="collapsed"
+        )
 
         # Guest View
         if st.session_state['guest_mode']:
