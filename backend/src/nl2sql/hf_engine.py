@@ -15,7 +15,7 @@ MODEL_REGISTRY = {
     #"deepseek-ai/DeepSeek-R1-Distill-Qwen-32B:featherless-ai": "chat"
 }
 
-DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-32B-Instruct:featherless-ai"
+DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai"
 
 # Custom LangChain wrapper for HuggingFace Inference API
 class HFChatWrapper(LLM):

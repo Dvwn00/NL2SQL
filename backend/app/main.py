@@ -1,4 +1,4 @@
-# Path: app/main.py
+# Path: backend/app/main.py
 # Main entry point for the NL2SQL application
 import os
 from dotenv import load_dotenv
