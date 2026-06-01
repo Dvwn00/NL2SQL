@@ -3,9 +3,11 @@
 import pandas as pd
 import streamlit as st
 import requests
+import os
+from dotenv import load_dotenv
 from typing import List, Dict, Any, Tuple
 
-FASTAPI_BASE_URL = "https://dvwn-nl2sql-api.hf.space"
+FASTAPI_BASE_URL = os.getenv("HF_API_URL")
 
 @st.cache_data(ttl=600)
 def get_available_models() -> List[str]:
