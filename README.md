@@ -1,3 +1,12 @@
+---
+title: NL2SQL API
+emoji: 🗄️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # NL2SQL
 A backend Command Line Interface (CLI) framework designed to evaluate and test various NL2SQL models.
 
