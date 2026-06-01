@@ -5,7 +5,7 @@ import streamlit as st
 import requests
 from typing import List, Dict, Any, Tuple
 
-FASTAPI_BASE_URL = "http://localhost:8000"
+FASTAPI_BASE_URL = "https://dvwn-nl2sql-api.hf.space"
 
 @st.cache_data(ttl=600)
 def get_available_models() -> List[str]:
