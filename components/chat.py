@@ -14,7 +14,7 @@ def render_chat_interface():
             st.write("")
         _, center_col, _ = st.columns([1, 2, 1])
         with center_col:
-            st.subheader(":material/calendar_view_month: Ask a question about your data (e.g., 'What is the top revenue in 2020')", anchor=False)
+            st.subheader(":material/calendar_view_month: Ask a question about your data (e.g., 'Which country has the highest revenue? Give country name and amount.')", anchor=False)
 
     for idx, message in enumerate(st.session_state.messages):
         role = message.get("role", "assistant")

@@ -130,7 +130,7 @@ def render_auth_dialog():
     Streamlit UI native dialog: Handle custom login & signup cleanly without template injection
     """
     st.subheader("Sign In or Register")
-    tab1, tab2 = st.tabs([":material/lock: Login", ":material/new: Create Account"])
+    tab1, tab2 = st.tabs([":material/lock_person: Login", ":material/person_book: Create Account"])
 
     with tab1:
         login_user = st.text_input("Username", key="login_user_input")
