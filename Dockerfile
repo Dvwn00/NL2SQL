@@ -1,12 +1,17 @@
 FROM python:3.11-slim
 
-WORKDIR /app
+RUN useradd -m -u 1000 user
+USER user
 
-COPY backend/requirements.txt .
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
 
+WORKDIR $HOME/app
+
+COPY --chown=user backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY backend/ .
+COPY --chown=user backend/ .
 
 # Expose the mandatory Hugging Face port
 EXPOSE 7860
