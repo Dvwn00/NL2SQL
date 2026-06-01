@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
-from src.database.db_manager import get_db_connection
-from src.nl2sql.hf_engine import get_models, DEFAULT_MODEL_ID
-from src.nl2sql.sql_agent import nl2sql_agent
+from backend.src.database.db_manager import get_db_connection
+from backend.src.nl2sql.hf_engine import get_models, DEFAULT_MODEL_ID
+from backend.src.nl2sql.sql_agent import nl2sql_agent
 
 load_dotenv()
 app = FastAPI(title="NL2SQL Backend API")

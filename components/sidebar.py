@@ -5,6 +5,21 @@ from utils.api import get_available_models
 from backend.src.database.db_manager import get_db_connection
 from components.auth import render_auth_dialog, save_chat_history, save_userDB, load_userDB
 
+@st.cache_data(ttl=60)
+def check_db_connection():
+    """ 
+    Ping the database to check connectivity status 
+    Cached for 60 seconds to avoid DB overloading on Streamlit rerun
+    """
+    try:
+        conn = get_db_connection()
+        # Close connection immediately after successful ping to free resources
+        if hasattr(conn, 'close'):
+            conn.close()
+        return True, None
+    except Exception as e:
+        return False, str(e)
+
 @st.dialog("Delete Confirmation")
 def confirm_delete(idx, session_title):
     st.warning(f"Are you sure you want to delete '{session_title}'?")
@@ -58,7 +73,13 @@ def render_sidebar():
         st.divider()
 
         st.subheader("Database Connection")
-        st.success(icon=":material/database:", body="Connected")
+        is_connected, error_msg = check_db_connection()
+
+        if is_connected:
+            st.success(icon=":material/database:", body="Connected")
+        else:
+            st.error(icon=":material/database_off:", body="Disconnected")
+            st.caption("Connection failed. Please check your configuration.")
         
         st.subheader("Model Selector")
         available_models = get_available_models()
