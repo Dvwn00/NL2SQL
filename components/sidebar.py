@@ -2,6 +2,7 @@
 # Sidebar component for navigation and additional options.
 import streamlit as st
 from utils.api import get_available_models
+from backend.src.database.db_manager import get_db_connection
 from components.auth import render_auth_dialog, save_chat_history, save_userDB, load_userDB
 
 @st.dialog("Delete Confirmation")
@@ -30,7 +31,13 @@ def confirm_delete(idx, session_title):
 
 def render_sidebar():
     with st.sidebar:
-        #st.subheader(":material/sql:", anchor=False)
+        if st.session_state.auth_stat == 'guest':
+            st.markdown("## :material/emoji_people: Welcome, Guest!")
+        else:
+            display_name = st.session_state.username.capitalize()
+            st.markdown(f"## :material/emoji_people: Hi, {display_name}!")
+        st.write("")
+        
         if st.session_state.auth_stat == 'guest':
             if st.button(":material/login: Login / Sign Up", type="secondary", use_container_width=True):
                 render_auth_dialog()
@@ -50,10 +57,10 @@ def render_sidebar():
             st.rerun()
         st.divider()
 
-        st.caption("Database Connection")
-        st.success(icon=":material/circle:", body="Connected")
-
-        st.caption("Model Selector")
+        st.subheader("Database Connection")
+        st.success(icon=":material/database:", body="Connected")
+        
+        st.subheader("Model Selector")
         available_models = get_available_models()
         st.session_state.current_model = st.selectbox(
             "Select model:",
@@ -62,7 +69,7 @@ def render_sidebar():
         )
         st.divider()
 
-        st.caption("History")
+        st.subheader(":material/history: History")
         if st.session_state.auth_stat == 'guest':
             st.info("You are in Guest Mode. Your conversation history will not be saved.")
         else:
@@ -83,7 +90,7 @@ def render_sidebar():
                     with col1:
                         session_title = session.get("title", f"Chat {idx + 1}")
                         if st.button(
-                            f":material/history: {session_title[:15]}...",
+                            f"{session_title[:25]}...",
                             key=f"load_session_{idx}",
                             use_container_width=True
                         ):
