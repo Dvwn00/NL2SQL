@@ -8,14 +8,14 @@ from typing import Any, List, Optional
 
 # Model Registry: Add several model to be tested
 MODEL_REGISTRY = {
-    "defog/sqlcoder-7b-2": "text",
     "Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai": "chat",
     "Qwen/Qwen2.5-Coder-32B-Instruct:featherless-ai": "chat",
-    "defog/llama-3-sqlcoder-8b:featherless-ai": "chat"
-    #"deepseek-ai/DeepSeek-R1-Distill-Qwen-32B:featherless-ai": "chat"
+    "defog/sqlcoder-7b-2": "text",
+    "defog/llama-3-sqlcoder-8b:featherless-ai": "chat",
+    "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B:featherless-ai": "chat"
 }
 
-DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai"
+DEFAULT_MODEL_ID = "defog/llama-3-sqlcoder-8b:featherless-ai"
 
 # Custom LangChain wrapper for HuggingFace Inference API
 class HFChatWrapper(LLM):
@@ -26,15 +26,40 @@ class HFChatWrapper(LLM):
     model_id: str
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
-        completion = self.client.chat.completions.create(
-            model = self.model_id,
-            messages = [
-                {"role": "user", "content": prompt}
-            ],
-            temperature = 0.0,
-            max_tokens = 512
-        )
-        return completion.choices[0].message.content
+        try:
+            completion = self.client.chat.completions.create(
+                model = self.model_id,
+                messages = [
+                    {"role": "user", "content": prompt}
+                ],
+                temperature = 0.0,
+                max_tokens = 512
+            )
+            return completion.choices[0].message.content
+        except Exception as e:
+            error_msg = str(e).lower()
+            if "503" in error_msg or "overloaded" in error_msg or "temporarily unavailable" in error_msg:
+                fallback_model = DEFAULT_MODEL_ID
+
+                if self.model_id == fallback_model:
+                    raise e
+
+                print(f"\n:material/warning: Model '{self.model_id}' is currently unavailable.")
+                print(f"Switching to default model: {fallback_model}...\n")
+
+                try:
+                    fallback_completion = self.client.chat.completions.create(
+                        model = fallback_model,
+                        messages = [
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature = 0.0,
+                        max_tokens = 512
+                    )
+                    return fallback_completion.choices[0].message.content
+                except Exception as fallback_e:
+                    raise fallback_e
+            raise e
     
     @property
     def _llm_type(self) -> str:
@@ -80,12 +105,6 @@ def get_llm(model_id: str = DEFAULT_MODEL_ID):
         )
     else:
         raise ValueError(f"Unknown model type: {model_type}")
-
-    # Initialize the HuggingFace InferenceClient
-    #client = InferenceClient(api_key=hf_token)
-    #llm = HFChatWrapper(client=client, model_id=active_model)
-
-    #return llm
 
 if __name__=="__main__":
     from dotenv import load_dotenv

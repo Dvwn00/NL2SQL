@@ -5,20 +5,26 @@ import streamlit as st
 import requests
 import os
 from dotenv import load_dotenv
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 
-FASTAPI_BASE_URL = os.getenv("HF_API_URL")
+load_dotenv()
+
+FASTAPI_BASE_URL = os.getenv("HF_API_URL", "http://localhost:7860")
 
 @st.cache_data(ttl=600)
-def get_available_models() -> List[str]:
+def get_available_models() -> dict:
     """ Fetches available models via FastAPI """
+    fallback_data = {
+        "models": ["defog/llama-3-sqlcoder-8b:featherless-ai"],
+        "default_model": "defog/llama-3-sqlcoder-8b:featherless-ai"
+    }
     try:
        resp = requests.get(f"{FASTAPI_BASE_URL}/models", timeout=10)
        resp.raise_for_status()
        return resp.json()
     except Exception as e:
-        st.warning(f"Backend unreachable. Using fallback models. Error: {e}")
-        return ["Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai"]
+        st.warning(f"Backend unreachable. Using fallback models.")
+        return fallback_data
 
 def process_userPrompt(question: str, model_id: str) -> Dict[str, Any]:
     """ Send user's question to FastAPI and parses the response """

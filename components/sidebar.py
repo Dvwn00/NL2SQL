@@ -83,9 +83,18 @@ def render_sidebar():
         
         st.subheader("Model Selector")
         available_models = get_available_models()
+        model_list = available_models.get("models", [])
+        default_model = available_models.get("default_model", "")
+
+        try:
+            default_idx = model_list.index(default_model)
+        except ValueError:
+            default_idx = 0
+
         st.session_state.current_model = st.selectbox(
             "Select model:",
-            available_models,
+            model_list,
+            index=default_idx,
             label_visibility="collapsed"
         )
         st.divider()

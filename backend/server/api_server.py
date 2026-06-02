@@ -28,9 +28,16 @@ def api_get_models():
     """ Endpoint to fetch available models """
     try:
         models = get_models()
-        return models if models else [DEFAULT_MODEL_ID]
+        return {
+            "models": models if models else [DEFAULT_MODEL_ID],
+            "default_model": DEFAULT_MODEL_ID
+        }
     except Exception as e:
-        return [DEFAULT_MODEL_ID, "Qwen/Qwen2.5-Coder-7B-Instruct:featherless-ai"]
+        fallback_models = [DEFAULT_MODEL_ID, "defog/llama-3-sqlcoder-8b:featherless-ai"]
+        return {
+            "model": fallback_models,
+            "default_model": DEFAULT_MODEL_ID
+        }
 
 @app.post("/chat", response_model=chatResponse)
 def api_process_chat(request: chatRequest):
