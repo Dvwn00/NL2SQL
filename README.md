@@ -7,6 +7,10 @@ sdk: docker
 pinned: false
 ---
 
+👋🏻 The Streamlit UI development has been done, try the demo now!
+
+👉🏻 NL2SQL Demo: https://nl2sql-assistant-dvwn.streamlit.app/
+
 # NL2SQL
 A backend Command Line Interface (CLI) framework designed to evaluate and test various NL2SQL models.
 
@@ -65,6 +69,6 @@ Once your environment is set up and your token is configured, you can run the CL
     3. Automatic Execution: Once a model is selected, the system will automatically begin running the batch test against the scenarios defined in scripts/test_cases.json. Sit back and wait for the reports to generate in your root folder!
 
 ## 🚧 Roadmap
-- Development and integration of a graphical User Interface (Frontend).
+✅ Development and integration of a graphical User Interface (Frontend).
 
 - Additional database schema support.
